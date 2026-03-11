@@ -1,4 +1,4 @@
-name: Build Raeed Clinic Installer
+name: Build Raeed Clinic Single EXE
 on:
   push:
     branches: [ "main" ]
@@ -8,23 +8,22 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
       - name: Install Dependencies
         run: npm install
 
-      - name: Compile with Inno Setup
-        uses: lowlighter/py-inno-setup-action@v1.1
+      - name: Build EXE with PKG
+        run: |
+          npx pkg app.js --target node18-win-x64 --output RaeedClinic.exe
+          
+      - name: Upload Single EXE
+        uses: actions/upload-artifact@v4
         with:
-          filepath: "RaeedOPDClinic-Script.iss"
-
-      - name: Upload Installer
-        uses: actions/upload-artifact@v3
-        with:
-          name: Raeed-Clinic-Setup
-          path: Output/*.exe
+          name: Raeed-Clinic-Portable
+          path: RaeedClinic.exe
